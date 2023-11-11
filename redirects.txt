@@ -1,2 +1,0 @@
-google.com → https://www.bing.com
-example.com → https://www.example.org

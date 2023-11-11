@@ -1,34 +1,19 @@
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === "redirect") {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      var activeTab = tabs[0];
+chrome.webNavigation.onBeforeNavigate.addListener(function (details) {
+  // Lê o conteúdo do arquivo urls.txt
+  fetch(chrome.extension.getURL("urls.txt"))
+    .then((response) => response.text())
+    .then((data) => {
+      // Verifica se a URL atual está no arquivo
+      const urlList = data.split("\n");
+      const currentURL = details.url;
 
-      chrome.scripting.executeScript({
-        target: { tabId: activeTab.id },
-        function: redirect,
-      });
+      for (const entry of urlList) {
+        const [sourceURL, redirectURL] = entry.split(",");
+        if (currentURL.includes(sourceURL)) {
+          // Realiza o redirecionamento
+          chrome.tabs.update(details.tabId, { url: redirectURL });
+          break;
+        }
+      }
     });
-  }
 });
-
-function redirect() {
-  chrome.storage.local.get("redirects", function (data) {
-    var redirects = data.redirects || [];
-
-    chrome.scripting.executeScript({
-      target: { tabId: activeTab.id },
-      function: function (redirects) {
-        var currentUrl = window.location.href;
-
-        redirects.forEach(function (rule) {
-          var [source, destination] = rule.split(" → ");
-
-          if (currentUrl.includes(source)) {
-            window.location.href = destination;
-          }
-        });
-      },
-      args: [redirects],
-    });
-  });
-}
