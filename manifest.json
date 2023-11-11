@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Fox Redirector",
+    "name": "Meu Redirecionador",
     "version": "1.0",
     "permissions": [
       "storage",
@@ -8,21 +8,11 @@
       "webNavigation"
     ],
     "browser_action": {
-      "default_icon": {
-        "16": "images/icon16.png",
-        "48": "images/icon48.png",
-        "128": "images/icon128.png"
-      },
       "default_popup": "popup.html"
     },
     "background": {
       "scripts": ["background.js"],
       "persistent": false
-    },
-    "icons": {
-      "16": "images/icon16.png",
-      "48": "images/icon48.png",
-      "128": "images/icon128.png"
     },
     "web_accessible_resources": ["redirects.txt"]
   }
